@@ -15,7 +15,7 @@
 
   <style>
     body {
-      background: #0f172a;
+      background: #111827; /* हल्का किया */
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -25,17 +25,17 @@
         sans-serif;
     }
     .app-card {
-      max-width: 900px;
+      max-width: 1000px;
       width: 100%;
-      background: #020617;
+      background: #02081f; /* पहले से थोड़ा हल्का */
       border-radius: 18px;
       box-shadow: 0 20px 60px rgba(15, 23, 42, 0.8);
-      border: 1px solid rgba(148, 163, 184, 0.25);
+      border: 1px solid rgba(148, 163, 184, 0.35);
       color: #e5e7eb;
     }
     .app-header {
       border-bottom: 1px solid rgba(148, 163, 184, 0.25);
-      background: radial-gradient(circle at top left, #1e293b, #020617);
+      background: radial-gradient(circle at top left, #1f2937, #020617);
       border-radius: 18px 18px 0 0;
     }
     .form-label {
@@ -55,7 +55,7 @@
       box-shadow: 0 0 0 1px #38bdf8;
       color: #e5e7eb;
     }
-    textarea#outputPrompt {
+    textarea {
       font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo,
         Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       font-size: 0.85rem;
@@ -94,6 +94,19 @@
       color: #9ca3af;
       margin-bottom: 0.35rem;
     }
+    .pill-box {
+      background-color: #020617;
+      border-radius: 999px;
+      padding: 4px 10px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      font-size: 0.75rem;
+      color: #e5e7eb;
+      display: inline-block;
+    }
+    .instrument-chip {
+      margin-right: 8px;
+      margin-bottom: 4px;
+    }
   </style>
 </head>
 <body>
@@ -105,11 +118,11 @@
           <div class="badge-soft mb-1">
             Suno AI • Prompt Builder
           </div>
-          <h1 class="h4 mb-0 text-light">
+          <h1 class="h4 mb-1 text-light">
             Song Prompt Generator Form
           </h1>
           <p class="small text-secondary mb-0">
-            नीचे form भरें, “Generate Prompt” दबाएँ और तैयार prompt को Suno AI में पेस्ट करें।
+            नीचे form भरें, “Generate Prompt” दबाएँ और तैयार prompt को AI में पेस्ट करें।
           </p>
         </div>
         <div class="text-end d-none d-md-block">
@@ -122,7 +135,7 @@
     <!-- Body -->
     <div class="px-4 py-4">
       <form id="songForm">
-        <!-- Row 1 -->
+        <!-- Row 1: Purpose + Platform -->
         <div class="row g-3">
           <!-- 1. Song kis liye banana hai -->
           <div class="col-md-6">
@@ -140,13 +153,42 @@
             </div>
           </div>
 
-          <!-- 2. Bhav / Emotion -->
+          <!-- Target Platform -->
           <div class="col-md-6">
             <label class="form-label">
-              2. भाव / Mood
+              2. Target Platform / Audience
+            </label>
+            <select class="form-select" id="platform">
+              <option value="">Select platform</option>
+              <option>Instagram Reels</option>
+              <option>YouTube Shorts</option>
+              <option>Facebook Reels</option>
+              <option>Moj / Josh / Short video app</option>
+              <option>YouTube full song</option>
+              <option>Spotify / Streaming</option>
+              <option>Live Bhajan / Stage</option>
+              <option>Background music for vlog</option>
+              <option>Other / Mixed</option>
+            </select>
+            <div class="small-hint">
+              जहाँ use करना है – Reels, YouTube, Bhajan मंडली, आदि।
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 2: Mood + Duration + Type -->
+        <div class="row g-3 mt-1">
+          <!-- भाव / Emotion -->
+          <div class="col-md-4">
+            <label class="form-label">
+              3. भाव / Mood
             </label>
             <select class="form-select" id="emotion">
               <option value="">Select mood</option>
+              <option>Nostalgic / Yaadgar</option>
+              <option>Peaceful / Sukoon</option>
+              <option>Spiritual / Dhyaan</option>
+              <option>Tensed / Bechaini</option>
               <option>Emotional / Dil se</option>
               <option>Happy / Positive</option>
               <option>Sad / Pain</option>
@@ -161,108 +203,37 @@
               जो overall feeling हो, वो चुनें।
             </div>
           </div>
-        </div>
 
-        <!-- Row 2 -->
-        <div class="row g-3 mt-1">
-          <!-- 3. Singer inspiration -->
-          <div class="col-md-6">
-            <label class="form-label">
-              3. Singer Inspiration (reference only)
-            </label>
-            <input
-              type="text"
-              class="form-control"
-              id="singerInspiration"
-              placeholder="जैसे: Arijit Singh type feel, Jubin Nautiyal vibe..."
-            />
-            <div class="small-hint">
-              Prompt में लिखा जाएगा: “inspired by the vibe of this singer, but do NOT copy any song”.
-            </div>
-          </div>
-
-          <!-- 4. Style / Production -->
-          <div class="col-md-6">
-            <label class="form-label">
-              4. Style / Music Production
-            </label>
-            <input
-              type="text"
-              class="form-control"
-              id="style"
-              placeholder="जैसे: lo-fi + hip-hop, acoustic, sufi rock, EDM, folk, kawwali..."
-            />
-            <div class="small-hint">
-              Instruments, tempo, vibe – जो भी दिमाग में हो, यहाँ लिखें।
-            </div>
-          </div>
-        </div>
-
-        <!-- Row 3 -->
-        <div class="row g-3 mt-1">
-          <!-- 5. Language -->
+          <!-- Time / Duration (dropdown) -->
           <div class="col-md-4">
             <label class="form-label">
-              5. Language (गीत की भाषा)
+              4. Time / Duration
             </label>
-            <select class="form-select" id="language">
-              <option value="">Select language</option>
-              <option>Pure Hindi</option>
-              <option>Simple Hindi</option>
-              <option>Hindi + Urdu</option>
-              <option>Hindi + Haryanvi</option>
-              <option>Hindi + Punjabi</option>
-              <option>Hinglish</option>
-              <option>Other (describe in extra instructions)</option>
+            <select class="form-select" id="duration">
+              <option value="">Select duration</option>
+              <option>0:30–0:45 sec (short reel)</option>
+              <option>0:45–1:00 min (reel/short)</option>
+              <option>1:30–2:00 min</option>
+              <option>2:30–3:00 min (full song)</option>
+              <option>3:00–4:00 min (long song)</option>
+              <option>Flexible, jo best लगे</option>
             </select>
             <div class="small-hint">
-              Suno AI को बताएँ कि lyrics mostly किस भाषा में हों।
+              Approx length – AI को अंदाज़ा मिल जाएगा।
             </div>
           </div>
 
-          <!-- 6. Time / Duration -->
+          <!-- Type / Region -->
           <div class="col-md-4">
             <label class="form-label">
-              6. Time / Duration (approx)
-            </label>
-            <input
-              type="text"
-              class="form-control"
-              id="duration"
-              placeholder="जैसे: 2:30 min, 3 min, short reel 0:45 sec"
-            />
-            <div class="small-hint">
-              Approx length लिखें – AI को idea मिल जाएगा।
-            </div>
-          </div>
-
-          <!-- 7. Theme / Story -->
-          <div class="col-md-4">
-            <label class="form-label">
-              7. Theme / Story (संक्षिप्त)
-            </label>
-            <input
-              type="text"
-              class="form-control"
-              id="theme"
-              placeholder="जैसे: रात की बेचैनी, hard work for family, travel in mountains..."
-            />
-            <div class="small-hint">
-              1–2 लाइन में मुख्य कहानी या भाव लिखें।
-            </div>
-          </div>
-        </div>
-
-        <!-- Row 4 -->
-        <div class="row g-3 mt-1">
-          <!-- 8. Type / Region -->
-          <div class="col-md-4">
-            <label class="form-label">
-              8. Type / Zone (Genre + Region)
+              5. Type / Zone (Genre + Region)
             </label>
             <select class="form-select" id="type">
               <option value="">Select type</option>
               <option>Bollywood style</option>
+              <option>Ghazal</option>
+              <option>Sufi-Pop</option>
+              <option>Indie Pop / Singer-Songwriter</option>
               <option>Haryanvi (Ragini / Desi)</option>
               <option>Punjabi Pop</option>
               <option>Hindi Rap / Hip-hop</option>
@@ -276,27 +247,481 @@
               अगर specific zone या fusion genre है तो यहाँ चुनें।
             </div>
           </div>
+        </div>
 
-          <!-- 9. Extra instructions -->
+        <!-- Row 3: Singer + Vocal + Energy -->
+        <div class="row g-3 mt-1">
+          <!-- Singer inspiration -->
           <div class="col-md-4">
             <label class="form-label">
-              9. Extra Instructions / Other details
+              6. Singer Inspiration (reference only)
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              id="singerInspiration"
+              placeholder="जैसे: Arijit type feel, Jubin type vibe..."
+            />
+            <div class="small-hint">
+              सिर्फ vibe की प्रेरणा, कॉपी नहीं।
+            </div>
+          </div>
+
+          <!-- Vocal Type -->
+          <div class="col-md-4">
+            <label class="form-label">
+              7. Vocal Type / Voice Feel
+            </label>
+            <select class="form-select" id="vocalType">
+              <option value="">Select vocal style</option>
+              <option>Male – soft, emotional</option>
+              <option>Male – powerful, high energy</option>
+              <option>Female – soft, soulful</option>
+              <option>Female – high pitch, strong</option>
+              <option>Duet – male + female</option>
+              <option>Group / Chorus style</option>
+            </select>
+            <div class="small-hint">
+              किस type की आवाज़ imagine कर रहे हैं।
+            </div>
+          </div>
+
+          <!-- Energy Curve -->
+          <div class="col-md-4">
+            <label class="form-label">
+              8. Energy Curve
+            </label>
+            <select class="form-select" id="energy">
+              <option value="">Select energy flow</option>
+              <option>Low → Medium (calm build-up)</option>
+              <option>Medium → High (anthem feel)</option>
+              <option>High पूरे song में</option>
+              <option>Low → High → Low (story + climax)</option>
+            </select>
+            <div class="small-hint">
+              Song शुरू से अंत तक energy कैसे चले।
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 4: Style + Language + Mix + Level + Tempo -->
+        <div class="row g-3 mt-1">
+          <!-- Style / Production -->
+          <div class="col-md-3">
+            <label class="form-label">
+              9. Style / Music Production
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              id="style"
+              placeholder="जैसे: lo-fi + hip-hop, acoustic, sufi rock..."
+            />
+            <div class="small-hint">
+              Instruments, tempo, groove वगैरह।
+            </div>
+          </div>
+
+          <!-- Language -->
+          <div class="col-md-3">
+            <label class="form-label">
+              10. Language (गीत की भाषा)
+            </label>
+            <select class="form-select" id="language">
+              <option value="">Select language mix</option>
+              <option>Simple Hindi</option>
+              <option>Pure Hindi</option>
+              <option>Only deep Haryanvi</option>
+              <option>Hindi + Urdu</option>
+              <option>Hindi + Haryanvi</option>
+              <option>Hindi + Punjabi</option>
+              <option>Hindi + Sanskrit</option>
+              <option>Sanskrit only (shloka / mantra style)</option>
+              <option>Hinglish</option>
+            </select>
+            <div class="small-hint">
+              Lyrics मुख्यत: किस भाषा में हों।
+            </div>
+          </div>
+
+          <!-- Language mix % -->
+          <div class="col-md-3">
+            <label class="form-label">
+              11. Language Mix % (selected languages)
+            </label>
+            <select class="form-select" id="languageMix">
+              <option value="">Select language mix pattern</option>
+              <option>100% main selected language only</option>
+              <option>Hindi 80% / regional 20%</option>
+              <option>Hindi 70% / Urdu 30%</option>
+              <option>Hindi 70% / Sanskrit 30%</option>
+              <option>Hindi 60% / English 40% (mainly in hooks)</option>
+              <option>Custom mix – describe in extra instructions</option>
+            </select>
+            <div class="small-hint">
+              Rough percentage, ताकि AI को mix समझ आए।
+            </div>
+          </div>
+
+          <!-- Language difficulty -->
+          <div class="col-md-3">
+            <label class="form-label">
+              12. Language Level / Difficulty
+            </label>
+            <select class="form-select" id="languageLevel">
+              <option value="">Select difficulty</option>
+              <option>Very simple – रोज़मर्रा की बोलचाल (सभी चुनी भाषाओं में)</option>
+              <option>Medium poetic – Hindi + Urdu images, हल्की shayari</option>
+              <option>Medium poetic – Hindi + Sanskrit touch</option>
+              <option>High poetic – गहरा Urdu / classical Hindi</option>
+              <option>High devotional – shloka / mantra style (Sanskrit-heavy)</option>
+            </select>
+            <div class="small-hint">
+              Words कितने simple या शायरी वाले चाहिए।
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 5: Tempo -->
+        <div class="row g-3 mt-1">
+          <div class="col-md-3">
+            <label class="form-label">
+              13. Tempo / BPM Feel
+            </label>
+            <select class="form-select" id="tempo">
+              <option value="">Select tempo</option>
+              <option>Slow – 60–80 BPM (senti / ghazal feel)</option>
+              <option>Medium – 80–100 BPM (lo-fi / chill)</option>
+              <option>Medium-Fast – 100–120 BPM (pop / Bollywood)</option>
+              <option>Fast – 120–140 BPM (dance / party)</option>
+              <option>Very fast – 140+ BPM (high energy)</option>
+              <option>Flexible, jo mood ke hisab se best लगे</option>
+            </select>
+            <div class="small-hint">
+              Speed / groove किस zone में हो।
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 6: Theme + Structure -->
+        <div class="row g-3 mt-1">
+          <!-- Theme / Story -->
+          <div class="col-md-6">
+            <label class="form-label">
+              14. Theme / Story (संक्षिप्त)
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              id="theme"
+              placeholder="जैसे: पूरा दिन मेहनत, रात को नींद नहीं, family ke liye struggle..."
+            />
+            <div class="small-hint">
+              1–2 लाइन में मुख्य कहानी या भाव लिखें।
+            </div>
+          </div>
+
+          <!-- Structure (checkbox) -->
+          <div class="col-md-6">
+            <label class="form-label">
+              15. Song Structure (जो parts ज़रूरी हैं)
+            </label>
+            <div class="small text-secondary">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" name="structure" value="Intro" id="sIntro" checked />
+                <label class="form-check-label small" for="sIntro">Intro</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" name="structure" value="Verse 1" id="sVerse1" checked />
+                <label class="form-check-label small" for="sVerse1">Verse 1</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" name="structure" value="Pre-Chorus" id="sPre" />
+                <label class="form-check-label small" for="sPre">Pre-Chorus</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" name="structure" value="Chorus / Hook" id="sChorus" checked />
+                <label class="form-check-label small" for="sChorus">Chorus / Hook</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" name="structure" value="Rap Verse" id="sRap" />
+                <label class="form-check-label small" for="sRap">Rap Verse</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" name="structure" value="Bridge" id="sBridge" />
+                <label class="form-check-label small" for="sBridge">Bridge</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" name="structure" value="Outro" id="sOutro" />
+                <label class="form-check-label small" for="sOutro">Outro</label>
+              </div>
+            </div>
+            <div class="small-hint">
+              अगर “Chorus / Hook” select है, तो AI को साफ़-साफ़ बोला जाएगा कि song की शुरुआत हमेशा hook/chorus से ही करे, फिर Verse 1 वगैरह पर जाए।
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 7: Hook + word bank + avoid words -->
+        <div class="row g-3 mt-1">
+          <!-- Hook seed -->
+          <div class="col-md-4">
+            <label class="form-label">
+              16. Hook Line Seed (optional)
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              id="hookSeed"
+              placeholder="जैसे: 'raat bhar neend na aaye'"
+            />
+            <div class="small-hint">
+              Hook में घूमाने वाला phrase (copy नहीं, सिर्फ idea). अगर खाली छोड़ेंगे तो भी AI को jabardast hook बनाना ही है।
+            </div>
+          </div>
+
+          <!-- Word bank -->
+          <div class="col-md-4">
+            <label class="form-label">
+              17. Important Words (Word Bank)
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              id="wordBank"
+              placeholder="जैसे: chaand, neend, station, Ashish..."
+            />
+            <div class="small-hint">
+              4–8 important शब्द comma से अलग कर के लिखें।
+            </div>
+          </div>
+
+          <!-- Avoid words -->
+          <div class="col-md-4">
+            <label class="form-label">
+              18. Avoid Words / Topics
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              id="avoidWords"
+              placeholder="जैसे: gaali, alcohol, politics..."
+            />
+            <div class="small-hint">
+              जो चीज़ें बिल्कुल नहीं चाहिए, यहाँ लिखें।
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 8: Instruments -->
+        <div class="row g-3 mt-1">
+          <div class="col-12">
+            <label class="form-label">
+              19. Music Instruments (tick जिनका use करना है)
+            </label>
+            <div class="small text-secondary">
+              <!-- Western / general melodic -->
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Acoustic guitar" id="instAcGtr" />
+                <label class="form-check-label small" for="instAcGtr">Acoustic Guitar</label>
+              </div>
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Electric guitar" id="instElGtr" />
+                <label class="form-check-label small" for="instElGtr">Electric Guitar</label>
+              </div>
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Bass guitar" id="instBassGtr" />
+                <label class="form-check-label small" for="instBassGtr">Bass Guitar</label>
+              </div>
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Piano" id="instPiano" />
+                <label class="form-check-label small" for="instPiano">Piano</label>
+              </div>
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Rhodes / soft keys" id="instRhodes" />
+                <label class="form-check-label small" for="instRhodes">Rhodes / Soft Keys</label>
+              </div>
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Synth pads" id="instSynth" />
+                <label class="form-check-label small" for="instSynth">Synth Pads</label>
+              </div>
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Strings (violins, cellos)" id="instStrings" />
+                <label class="form-check-label small" for="instStrings">Strings</label>
+              </div>
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Brass / horns" id="instBrass" />
+                <label class="form-check-label small" for="instBrass">Brass / Horns</label>
+              </div>
+
+              <!-- Indian melodic -->
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Bansuri / flute" id="instBansuri" />
+                <label class="form-check-label small" for="instBansuri">Bansuri / Flute</label>
+              </div>
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Harmonium" id="instHarmonium" />
+                <label class="form-check-label small" for="instHarmonium">Harmonium</label>
+              </div>
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Sitar" id="instSitar" />
+                <label class="form-check-label small" for="instSitar">Sitar</label>
+              </div>
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Sarod" id="instSarod" />
+                <label class="form-check-label small" for="instSarod">Sarod</label>
+              </div>
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Sarangi" id="instSarangi" />
+                <label class="form-check-label small" for="instSarangi">Sarangi</label>
+              </div>
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Santoor" id="instSantoor" />
+                <label class="form-check-label small" for="instSantoor">Santoor</label>
+              </div>
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Tanpura" id="instTanpura" />
+                <label class="form-check-label small" for="instTanpura">Tanpura</label>
+              </div>
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Shehnai" id="instShehnai" />
+                <label class="form-check-label small" for="instShehnai">Shehnai</label>
+              </div>
+
+              <!-- Western & indie extras -->
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Ukulele" id="instUkulele" />
+                <label class="form-check-label small" for="instUkulele">Ukulele</label>
+              </div>
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Mandolin" id="instMandolin" />
+                <label class="form-check-label small" for="instMandolin">Mandolin</label>
+              </div>
+
+              <!-- Percussion -->
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Tabla" id="instTabla" />
+                <label class="form-check-label small" for="instTabla">Tabla</label>
+              </div>
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Dholak" id="instDholak" />
+                <label class="form-check-label small" for="instDholak">Dholak</label>
+              </div>
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Dhol / Nagara" id="instDhol" />
+                <label class="form-check-label small" for="instDhol">Dhol / Nagara</label>
+              </div>
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Kick & snare (drum kit)" id="instDrums" />
+                <label class="form-check-label small" for="instDrums">Kick & Snare (Drums)</label>
+              </div>
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="808 / bass" id="inst808" />
+                <label class="form-check-label small" for="inst808">808 / Bass</label>
+              </div>
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Cajon" id="instCajon" />
+                <label class="form-check-label small" for="instCajon">Cajon</label>
+              </div>
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Bongos / Congas" id="instBongos" />
+                <label class="form-check-label small" for="instBongos">Bongos / Congas</label>
+              </div>
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Mridangam" id="instMridangam" />
+                <label class="form-check-label small" for="instMridangam">Mridangam</label>
+              </div>
+
+              <!-- Small percussions / FX -->
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Claps & snaps" id="instClaps" />
+                <label class="form-check-label small" for="instClaps">Claps & Snaps</label>
+              </div>
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Shakers / ghungroo" id="instShakers" />
+                <label class="form-check-label small" for="instShakers">Shakers / Ghungroo</label>
+              </div>
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Manjira / kartal" id="instManjira" />
+                <label class="form-check-label small" for="instManjira">Manjira / Kartal</label>
+              </div>
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Chimta" id="instChimta" />
+                <label class="form-check-label small" for="instChimta">Chimta</label>
+              </div>
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Whistle / seeti" id="instWhistle" />
+                <label class="form-check-label small" for="instWhistle">Whistle / Seeti</label>
+              </div>
+
+              <!-- FX -->
+              <div class="form-check form-check-inline instrument-chip">
+                <input class="form-check-input" type="checkbox" name="instrument" value="Ambient FX / risers" id="instFX" />
+                <label class="form-check-label small" for="instFX">Ambient FX / Risers</label>
+              </div>
+            </div>
+            <div class="small-hint">
+              जो instruments ज़रूरी लगते हैं, उन्हें tick कर दें। बाकी AI taste के हिसाब से add कर सकता है।
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 9: Rhyme + Reference + Extra -->
+        <div class="row g-3 mt-1">
+          <!-- Rhyme scheme -->
+          <div class="col-md-4">
+            <label class="form-label">
+              20. Rhyme Scheme
+            </label>
+            <select class="form-select" id="rhyme">
+              <option value="">Select rhyme style</option>
+              <option>Simple AABB</option>
+              <option>ABAB</option>
+              <option>Mix / flexible, बस natural लगे</option>
+            </select>
+            <div class="small-hint">
+              तुक कितनी साफ़ और pattern कैसी हो।
+            </div>
+          </div>
+
+          <!-- Reference song -->
+          <div class="col-md-4">
+            <label class="form-label">
+              21. Reference Song (optional)
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              id="referenceSong"
+              placeholder="Song name ya YouTube link (style only)"
+            />
+            <div class="small-hint">
+              Sirf mood inspiration, copy नहीं करना।
+            </div>
+          </div>
+
+          <!-- Extra instructions -->
+          <div class="col-md-4">
+            <label class="form-label">
+              22. Extra Instructions
             </label>
             <input
               type="text"
               class="form-control"
               id="extra"
-              placeholder="कुछ और specific जरूरत, शब्द, vibe..."
+              placeholder="जैसे: simple Hindi, no rap, deep feel..."
             />
             <div class="small-hint">
-              जैसे: ज़्यादा simple Hindi, no rap, सिर्फ chorus strong हो, वगैरह।
+              कोई और खास instruction हो तो यहाँ डालें।
             </div>
           </div>
+        </div>
 
-          <!-- 10. Signature -->
-          <div class="col-md-4">
+        <!-- Row 10: Signature -->
+        <div class="row g-3 mt-1">
+          <div class="col-md-6">
             <label class="form-label">
-              10. Signature / Dedication
+              23. Signature / Dedication
             </label>
             <input
               type="text"
@@ -310,54 +735,93 @@
           </div>
         </div>
 
-        <!-- Generate + Copy buttons -->
+        <!-- Generate button -->
         <div class="mt-4 d-flex align-items-center">
           <button type="button" class="btn btn-primary me-2" id="generate">
-            Generate Prompt
-          </button>
-          <button type="button" class="btn btn-outline-light" id="copyPrompt" disabled>
-            Copy Prompt
+            Generate Prompts
           </button>
         </div>
 
-        <!-- Output area -->
+        <!-- Output area: Suno AI -->
         <div class="mt-4">
-          <label class="form-label section-title">Generated AI Prompt</label>
+          <label class="form-label section-title">Prompt for Suno AI (direct use)</label>
           <textarea
-            id="outputPrompt"
+            id="outputPromptSuno"
             class="form-control"
-            rows="8"
+            rows="10"
             readonly
-            placeholder="Generated prompt यहाँ नज़र आएगा"
+            placeholder="Yahaan Suno AI ke liye prompt aayega"
           ></textarea>
+          <button
+            type="button"
+            class="btn btn-outline-light mt-2"
+            id="copyPromptSuno"
+            disabled
+          >
+            Copy Suno Prompt
+          </button>
+        </div>
+
+        <!-- Output area: ChatGPT / Other AI -->
+        <div class="mt-4">
+          <label class="form-label section-title">Detailed Prompt for ChatGPT / other AI</label>
+          <textarea
+            id="outputPromptOther"
+            class="form-control"
+            rows="12"
+            readonly
+            placeholder="Yahaan detailed prompt aayega jo ChatGPT ya kisi bhi lyrics AI ko diya ja sakta hai"
+          ></textarea>
+          <button
+            type="button"
+            class="btn btn-outline-light mt-2"
+            id="copyPromptOther"
+            disabled
+          >
+            Copy Detailed Prompt
+          </button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- JS: build prompt -->
+  <!-- JS: build prompts -->
   <script>
-    const form = document.getElementById("songForm");
     const generateBtn = document.getElementById("generate");
-    const copyBtn = document.getElementById("copyPrompt");
-    const output = document.getElementById("outputPrompt");
+    const outputSuno = document.getElementById("outputPromptSuno");
+    const outputOther = document.getElementById("outputPromptOther");
+    const copySuno = document.getElementById("copyPromptSuno");
+    const copyOther = document.getElementById("copyPromptOther");
 
-    function buildPrompt(data) {
+    function buildPromptCommon(data) {
       const lines = [];
 
+      // Goal line
       lines.push(
-        `Goal: Create a ${data.duration || "2–3 minute"} ${
-          data.type || "Hindi"
-        } song for this purpose: ${data.purpose || "special occasion"}.`
+        `Goal: Create a ${data.duration || "2–3 minute"} ${data.type ||
+          "Hindi"} song for this purpose: ${data.purpose ||
+          "a special emotional moment"} on platform: ${data.platform ||
+          "common social/streaming platforms"}.`
       );
 
       if (data.theme) {
-        lines.push(`Theme/Story: ${data.theme}.`);
+        lines.push(`Theme / Story (Hindi brief): ${data.theme}.`);
       }
 
+      // Mood & energy
       lines.push(
-        `Emotion/Mood: ${data.emotion || "Neutral / open to interpretation"}.`
+        `Emotion / Mood: ${data.emotion ||
+          "emotionally engaging and heartfelt"}.`
       );
+
+      if (data.energy) {
+        lines.push(`Energy curve: ${data.energy}.`);
+      }
+
+      // Vocal & singer style
+      if (data.vocalType) {
+        lines.push(`Vocal type: ${data.vocalType}.`);
+      }
 
       if (data.singerInspiration) {
         lines.push(
@@ -365,66 +829,245 @@
         );
       }
 
+      // Style, language, tempo
       if (data.style) {
-        lines.push(`Musical style/production: ${data.style}.`);
+        lines.push(`Musical style / production: ${data.style}.`);
       }
 
       lines.push(
         `Language: Lyrics should be primarily in ${data.language ||
-          "simple Hindi"}, with natural, easy-to-understand words and smooth rhymes.`
+          "simple Hindi"}, at a ${data.languageLevel ||
+          "very simple, easy"} level.`
       );
 
+      if (data.languageMix) {
+        lines.push(`Language mix preference: ${data.languageMix}.`);
+      }
+
+      if (data.tempo) {
+        lines.push(`Tempo / BPM feel: ${data.tempo}.`);
+      }
+
+      // Structure
+      if (data.structure && data.structure.length) {
+        lines.push(
+          `Song structure: use these sections (if they fit naturally): ${data.structure.join(
+            " → "
+          )}.`
+        );
+      }
+
+      // Hook seed & words
+      if (data.hookSeed) {
+        lines.push(
+          `Hook idea from user: build a strong, memorable hook around this phrase (you may adjust wording but keep the feel): "${data.hookSeed}".`
+        );
+      } else {
+        lines.push(
+          "User has not provided a hook phrase. You must still create a very strong, simple and memorable hook/chorus line that can work as a viral reel moment."
+        );
+      }
+
+      if (data.wordBank) {
+        lines.push(
+          `Try to naturally include these important words (only if they fit the story): ${data.wordBank}.`
+        );
+      }
+
+      if (data.avoidWords) {
+        lines.push(
+          `Avoid these words / topics completely: ${data.avoidWords}.`
+        );
+      }
+
+      // Instruments
+      if (data.instruments && data.instruments.length) {
+        lines.push(
+          `Preferred instruments: ${data.instruments.join(
+            ", "
+          )}. You may add subtle supporting layers that match this palette.`
+        );
+      }
+
+      // Rhyme scheme
+      if (data.rhyme) {
+        lines.push(`Rhyme scheme preference: ${data.rhyme}.`);
+      } else {
+        lines.push(
+          "Rhyme scheme: keep rhymes natural and smooth, no forced rhyming."
+        );
+      }
+
+      // Reference song
+      if (data.referenceSong) {
+        lines.push(
+          `Reference song for overall mood only (do NOT copy): ${data.referenceSong}.`
+        );
+      }
+
+      // Extra instructions & signature
       if (data.extra) {
         lines.push(`Extra instructions from user: ${data.extra}.`);
       }
 
       if (data.signature) {
-        lines.push(`If possible, subtly mention or dedicate the song to: ${data.signature}.`);
+        lines.push(
+          `If possible, subtly dedicate the song to: ${data.signature}.`
+        );
       }
 
+      return lines;
+    }
+
+    function buildPromptSuno(data) {
+      const lines = [];
+
+      // 1) Professional writer + latest trend
       lines.push(
-        "Do NOT plagiarize. Compose 100% original melody and lyrics, only inspired by the general style, not copying any song."
+        "You are a professional Hindi song lyricist working for an AI music generator (like Suno AI). Your job is to create a highly trending, emotionally strong, 100% original song based on the following brief."
+      );
+
+      // 2) Common brief
+      lines.push(...buildPromptCommon(data));
+
+      // 3) Hook-first strict instruction if structure me hook hai
+      if (data.structure && data.structure.includes("Chorus / Hook")) {
+        lines.push(
+          "For maximum catchiness and viewer retention (especially for short-form platforms like Reels/Shorts), always start the song with a short, catchy hook/chorus section first, and only after that move into Verse 1 and other sections. Do NOT begin with a long intro that delays the hook."
+        );
+      }
+
+      // 4) Output protocol (Suno AI style)
+      lines.push(
+        "Output protocol: Print section labels in English in parentheses on separate lines only: (Title) (Intro) (Verse 1) (Pre-Chorus) (Chorus) (Hook) (Verse 2) (Bridge) (Final Chorus) (Outro). Do not sing labels. All sung lines must be Hindi-only words (no English in lyrics)."
+      );
+      lines.push(
+        "Line length: keep most lines 5–9 words, singable, with clear rhythm and modern phrasing that fits current trends."
+      );
+
+      // 5) Safety / originality
+      lines.push(
+        "Do NOT plagiarize. Compose 100% original melody and lyrics, only inspired by the general style and mood, never copying any existing song, hook, or tune."
+      );
+      lines.push(
+        "Keep content clean: no explicit content, no abusive language, and no political or hateful themes."
+      );
+
+      return lines.join("\n");
+    }
+
+    function buildPromptOther(data) {
+      const lines = [];
+
+      // 1) Professional writer + latest trend (ChatGPT / अन्य AI)
+      lines.push(
+        "You are a professional Hindi lyricist and composer. Write complete Hindi song lyrics yourself (not just a prompt), following the latest trends on Instagram Reels, YouTube and streaming platforms. The song must feel modern, catchy and emotionally powerful."
+      );
+
+      // 2) Common brief
+      lines.push(...buildPromptCommon(data));
+
+      // 3) Hook-first strict instruction if applicable
+      if (data.structure && data.structure.includes("Chorus / Hook")) {
+        lines.push(
+          "Start the song directly with a short, catchy hook/chorus before the first verse, so that the most memorable line comes at the very beginning for viral potential. After that, continue with Verse 1, Pre-Chorus, etc. as needed."
+        );
+      }
+
+      // 4) Output style for lyrics AI
+      lines.push(
+        "Now write the full song lyrics in Hindi only (no English words in sung lines)."
+      );
+      lines.push(
+        "Use clear section headings like (Title), (Intro), (Verse 1), (Pre-Chorus), (Chorus), (Hook), (Verse 2), (Bridge), (Final Chorus), (Outro)."
+      );
+      lines.push(
+        "Focus on natural, meaningful lines with smooth rhymes. Avoid forced rhyming just to match last words."
+      );
+      lines.push(
+        "Maintain a clear emotional arc and story flow from start to end so that the song feels complete and satisfying."
+      );
+      lines.push(
+        "Return only the lyrics with section labels, no extra explanation or commentary."
+      );
+
+      // 5) Originality & cleanliness
+      lines.push(
+        "Do NOT copy or closely imitate any existing Hindi song. Keep lyrics 100% original while matching the mood and genre."
+      );
+      lines.push(
+        "Keep content clean and suitable for a general audience (no abuse, no explicit content, no hate)."
       );
 
       return lines.join("\n");
     }
 
     generateBtn.addEventListener("click", () => {
+      const structure = Array.from(
+        document.querySelectorAll('input[name="structure"]:checked')
+      ).map((el) => el.value);
+
+      const instruments = Array.from(
+        document.querySelectorAll('input[name="instrument"]:checked')
+      ).map((el) => el.value);
+
       const data = {
         purpose: document.getElementById("purpose").value.trim(),
+        platform: document.getElementById("platform").value.trim(),
         emotion: document.getElementById("emotion").value.trim(),
+        duration: document.getElementById("duration").value.trim(),
+        type: document.getElementById("type").value.trim(),
         singerInspiration: document
           .getElementById("singerInspiration")
           .value.trim(),
+        vocalType: document.getElementById("vocalType").value.trim(),
+        energy: document.getElementById("energy").value.trim(),
         style: document.getElementById("style").value.trim(),
         language: document.getElementById("language").value.trim(),
-        duration: document.getElementById("duration").value.trim(),
+        languageLevel: document.getElementById("languageLevel").value.trim(),
+        languageMix: document.getElementById("languageMix").value.trim(),
+        tempo: document.getElementById("tempo").value.trim(),
         theme: document.getElementById("theme").value.trim(),
-        type: document.getElementById("type").value.trim(),
+        structure,
+        hookSeed: document.getElementById("hookSeed").value.trim(),
+        wordBank: document.getElementById("wordBank").value.trim(),
+        avoidWords: document.getElementById("avoidWords").value.trim(),
+        instruments,
+        rhyme: document.getElementById("rhyme").value.trim(),
+        referenceSong: document.getElementById("referenceSong").value.trim(),
         extra: document.getElementById("extra").value.trim(),
         signature: document.getElementById("signature").value.trim()
       };
 
-      const prompt = buildPrompt(data);
-      output.value = prompt;
-      copyBtn.disabled = !prompt.trim();
+      const sunoPrompt = buildPromptSuno(data);
+      const otherPrompt = buildPromptOther(data);
+
+      outputSuno.value = sunoPrompt;
+      outputOther.value = otherPrompt;
+
+      copySuno.disabled = !sunoPrompt.trim();
+      copyOther.disabled = !otherPrompt.trim();
     });
 
-    copyBtn.addEventListener("click", () => {
-      if (!output.value.trim()) return;
-      navigator.clipboard
-        .writeText(output.value)
-        .then(() => {
-          copyBtn.textContent = "Copied!";
-          setTimeout(() => {
-            copyBtn.textContent = "Copy Prompt";
-          }, 2000);
-        })
-        .catch((err) => {
-          console.error("Could not copy text:", err);
-        });
-    });
+    function setupCopy(button, textarea, labelDefault) {
+      button.addEventListener("click", () => {
+        if (!textarea.value.trim()) return;
+        navigator.clipboard
+          .writeText(textarea.value)
+          .then(() => {
+            button.textContent = "Copied!";
+            setTimeout(() => {
+              button.textContent = labelDefault;
+            }, 2000);
+          })
+          .catch((err) => {
+            console.error("Could not copy text:", err);
+          });
+      });
+    }
+
+    setupCopy(copySuno, outputSuno, "Copy Suno Prompt");
+    setupCopy(copyOther, outputOther, "Copy Detailed Prompt");
   </script>
 </body>
 </html>
-
