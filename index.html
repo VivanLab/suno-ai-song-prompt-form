@@ -270,4 +270,161 @@
               <option>Qawwali style</option>
               <option>Folk (Rajasthani / Pahadi etc.)</option>
               <option>Lo-fi Indie</option>
-              <option>Other / Mix style</
+              <option>Other / Mix style</option>
+            </select>
+            <div class="small-hint">
+              अगर specific zone या fusion genre है तो यहाँ चुनें।
+            </div>
+          </div>
+
+          <!-- 9. Extra instructions -->
+          <div class="col-md-4">
+            <label class="form-label">
+              9. Extra Instructions / Other details
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              id="extra"
+              placeholder="कुछ और specific जरूरत, शब्द, vibe..."
+            />
+            <div class="small-hint">
+              जैसे: ज़्यादा simple Hindi, no rap, सिर्फ chorus strong हो, वगैरह।
+            </div>
+          </div>
+
+          <!-- 10. Signature -->
+          <div class="col-md-4">
+            <label class="form-label">
+              10. Signature / Dedication
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              id="signature"
+              placeholder="आपका नाम या जिसको dedicate है"
+            />
+            <div class="small-hint">
+              Example: “From Ashish for his son”, या सिर्फ अपना नाम।
+            </div>
+          </div>
+        </div>
+
+        <!-- Generate + Copy buttons -->
+        <div class="mt-4 d-flex align-items-center">
+          <button type="button" class="btn btn-primary me-2" id="generate">
+            Generate Prompt
+          </button>
+          <button type="button" class="btn btn-outline-light" id="copyPrompt" disabled>
+            Copy Prompt
+          </button>
+        </div>
+
+        <!-- Output area -->
+        <div class="mt-4">
+          <label class="form-label section-title">Generated AI Prompt</label>
+          <textarea
+            id="outputPrompt"
+            class="form-control"
+            rows="8"
+            readonly
+            placeholder="Generated prompt यहाँ नज़र आएगा"
+          ></textarea>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- JS: build prompt -->
+  <script>
+    const form = document.getElementById("songForm");
+    const generateBtn = document.getElementById("generate");
+    const copyBtn = document.getElementById("copyPrompt");
+    const output = document.getElementById("outputPrompt");
+
+    function buildPrompt(data) {
+      const lines = [];
+
+      lines.push(
+        `Goal: Create a ${data.duration || "2–3 minute"} ${
+          data.type || "Hindi"
+        } song for this purpose: ${data.purpose || "special occasion"}.`
+      );
+
+      if (data.theme) {
+        lines.push(`Theme/Story: ${data.theme}.`);
+      }
+
+      lines.push(
+        `Emotion/Mood: ${data.emotion || "Neutral / open to interpretation"}.`
+      );
+
+      if (data.singerInspiration) {
+        lines.push(
+          `Singer inspiration: inspired by the vibe of ${data.singerInspiration}, but do NOT copy any existing melody or lyrics.`
+        );
+      }
+
+      if (data.style) {
+        lines.push(`Musical style/production: ${data.style}.`);
+      }
+
+      lines.push(
+        `Language: Lyrics should be primarily in ${data.language ||
+          "simple Hindi"}, with natural, easy-to-understand words and smooth rhymes.`
+      );
+
+      if (data.extra) {
+        lines.push(`Extra instructions from user: ${data.extra}.`);
+      }
+
+      if (data.signature) {
+        lines.push(`If possible, subtly mention or dedicate the song to: ${data.signature}.`);
+      }
+
+      lines.push(
+        "Do NOT plagiarize. Compose 100% original melody and lyrics, only inspired by the general style, not copying any song."
+      );
+
+      return lines.join("\n");
+    }
+
+    generateBtn.addEventListener("click", () => {
+      const data = {
+        purpose: document.getElementById("purpose").value.trim(),
+        emotion: document.getElementById("emotion").value.trim(),
+        singerInspiration: document
+          .getElementById("singerInspiration")
+          .value.trim(),
+        style: document.getElementById("style").value.trim(),
+        language: document.getElementById("language").value.trim(),
+        duration: document.getElementById("duration").value.trim(),
+        theme: document.getElementById("theme").value.trim(),
+        type: document.getElementById("type").value.trim(),
+        extra: document.getElementById("extra").value.trim(),
+        signature: document.getElementById("signature").value.trim()
+      };
+
+      const prompt = buildPrompt(data);
+      output.value = prompt;
+      copyBtn.disabled = !prompt.trim();
+    });
+
+    copyBtn.addEventListener("click", () => {
+      if (!output.value.trim()) return;
+      navigator.clipboard
+        .writeText(output.value)
+        .then(() => {
+          copyBtn.textContent = "Copied!";
+          setTimeout(() => {
+            copyBtn.textContent = "Copy Prompt";
+          }, 2000);
+        })
+        .catch((err) => {
+          console.error("Could not copy text:", err);
+        });
+    });
+  </script>
+</body>
+</html>
+
